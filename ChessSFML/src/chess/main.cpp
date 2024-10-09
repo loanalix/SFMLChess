@@ -28,13 +28,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	if (RegisterClassExW(&wcex) == 0)
 		return 0;
 
-	HWND hWnd = CreateWindowW(L"WinAppClass", L"Title", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+	HWND hWnd = CreateWindowW(L"WinAppClass", L"Title", WS_OVERLAPPEDWINDOW,CW_USEDEFAULT, 0, 800, 800, nullptr, nullptr, hInstance, nullptr);
 	if (hWnd == NULL)
 		return 0;
 
-	sf::RenderWindow window(hWnd);
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
+	
+	sf::RenderWindow window;
+	window.create(hWnd);
 
 	while (window.isOpen())
 	{
