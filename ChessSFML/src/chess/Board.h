@@ -1,6 +1,9 @@
 #pragma once
 #include "pch.h"
 
+
+class Piece;
+
 class Board
 {
 private:
@@ -13,6 +16,14 @@ public:
 	virtual ~Board();
 	
 	void InitBoard(sf::RenderWindow& window);
+
+
+	Piece* m_TabPiece[64];
+
+	void BoardPrint();
+
+
+	void PlayGame();
 
 };
 
