@@ -4,28 +4,15 @@
 TextureManager::TextureManager() {};
 
 
-std::map<std::string, sf::Texture> TextureManager::textures; 
+std::map<std::string, sf::Texture> TextureManager::textures;
 
-void TextureManager::LoadTextures()
-{
-    LoadTexture("pawn", "../../Textures/white_pawn.png");
-    //LoadTexture("rook", "../../Textures/tour.png");
-    
+void TextureManager::LoadTexture() {
+    textures["white_pawn"].loadFromFile("../Textures/white_pawn.png");
+    textures["black_pawn"].loadFromFile("../Textures/black_pawn.png");
 }
 
-void TextureManager::LoadTexture(const std::string& name, const std::string& filename)
-{
-    sf::Texture texture;
-    if (!texture.loadFromFile(filename))
-    {
-        std::cerr << "Erreur : Impossible de charger " << filename << std::endl;
-    }
-    textures[name] = texture;  
-}
-
-sf::Texture& TextureManager::GetTexture(const std::string& name)
-{
-    return textures.at(name); 
+sf::Texture& TextureManager::GetTexture(const std::string& name) {
+    return textures[name];
 }
 
 TextureManager::~TextureManager() {};

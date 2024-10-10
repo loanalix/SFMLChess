@@ -8,12 +8,9 @@ public:
     TextureManager();
     ~TextureManager();
 
-    static void LoadTextures();
-
+    void LoadTexture();
     static sf::Texture& GetTexture(const std::string& name);
 
 private:
     static std::map<std::string, sf::Texture> textures;
-
-    static void LoadTexture(const std::string& name, const std::string& filename);
 };

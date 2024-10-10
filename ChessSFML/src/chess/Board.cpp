@@ -17,14 +17,7 @@ void Board::InitBoard(sf::RenderWindow& window)
 
     Pawn* pawn = new Pawn();
     pawn->InitPiece(0, 1, 'P', 1, 'w'); // Exemple de pion blanc
-
-    // Charger la texture et l'appliquer
-    sf::Texture& pawnTexture = TextureManager::GetTexture("pawn");
-    pawn->SetTexture(pawnTexture);
-
-    // Ajouter le sprite du pion dans le tableau de sprites
-    m_sprites.push_back(pawn->GetSprite());
-
+    m_TabPiece[1 * 8 + 0] = pawn;
 
     for (int row = 0; row < 8; row++)
     {

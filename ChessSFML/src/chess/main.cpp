@@ -34,9 +34,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		return 0;
 
 
-	TextureManager textureManager;
-	textureManager.LoadTextures();
-	
 	sf::RenderWindow window;
 	window.create(hWnd);
 
