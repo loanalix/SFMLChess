@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "main.h"
 #include "Board.h"
+#include "TextureManager.h"
 
 Board board;
 
@@ -32,6 +33,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	if (hWnd == NULL)
 		return 0;
 
+
+	TextureManager textureManager;
+	textureManager.LoadTextures();
 	
 	sf::RenderWindow window;
 	window.create(hWnd);

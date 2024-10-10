@@ -1,16 +1,21 @@
 #pragma once
 
 #include "Piece.h"
-
+#include "Board.h"
 class Pawn : public Piece
 {
 public:
-	Pawn();
-	virtual ~Pawn();
+    Pawn();
+    ~Pawn();
 
-	bool firstTurn;
+    void InitPiece(int posX, int posY, char symbole, int sense, char team) override;
+    int CheckMove(int moveCaseX, int moveCaseY, Board* board) override;
 
-	int CheckMove(int moveCaseX, int moveCaseY, Board* board) override;
-	void  InitPiece(int posX, int posY, char symbole, int sense, char team) override;
+    void SetTexture(const sf::Texture& texture); 
+    sf::Sprite& GetSprite(); 
+
+private:
+    bool firstTurn;
+    sf::Sprite m_sprite; 
 };
 

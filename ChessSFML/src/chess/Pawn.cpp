@@ -15,6 +15,19 @@ void Pawn::InitPiece(int posX, int posY, char symbole, int sense, char team)
 
 }
 
+
+void Pawn::SetTexture(const sf::Texture& texture)
+{
+	m_sprite.setTexture(texture);
+}
+
+sf::Sprite& Pawn::GetSprite()
+{
+	return m_sprite;
+}
+
+
+
 int Pawn::CheckMove(int moveCaseX, int moveCaseY, Board* board)
 {
     int direction = (m_team == 'w') ? 1 : -1;

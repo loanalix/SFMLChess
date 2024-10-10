@@ -1,29 +1,22 @@
 #pragma once
 #include "pch.h"
+#include "Piece.h"
 
 
 class Piece;
 
 class Board
 {
-private:
-
-	bool isColor;
-
-
 public:
-	Board();
-	virtual ~Board();
-	
-	void InitBoard(sf::RenderWindow& window);
+    Board();
+    ~Board();
+    
+    Piece* m_TabPiece[64];
 
+    void InitBoard(sf::RenderWindow& window);
+    void Draw(sf::RenderWindow& window); 
 
-	Piece* m_TabPiece[64];
-
-	void BoardPrint();
-
-
-	void PlayGame();
-
+private:
+    std::vector<sf::Sprite> m_sprites; 
 };
 

@@ -14,3 +14,6 @@
 #define new DEBUG_NEW
 #endif
 #include <SFML/Graphics.hpp>
+#include <map>
+#include <string>
+#include <iostream>

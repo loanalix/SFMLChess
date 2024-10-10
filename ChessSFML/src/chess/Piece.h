@@ -2,6 +2,8 @@
 
 #include "Board.h"
 
+class Board;
+
 class Piece
 {
 public:

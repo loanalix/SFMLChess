@@ -1,1 +1,1 @@
-solutiongenerator -make ..
+solutiongenerator -make ../
