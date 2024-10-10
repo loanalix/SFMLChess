@@ -14,10 +14,10 @@ void King::Init(ColorCustom c, int x, int y)
 
 	if (color == White)
 	{
-		path = "..\\..\\..\\src\\p2\\wk.png";
+		path = "..\\..\\..\\src\\chess\\Texture\\white_king.png";
 	}
 	else {
-		path = "..\\..\\..\\src\\p2\\bk.png";
+		path = "..\\..\\..\\src\\chess\\Texture\\black_king.png";
 	}
 
 	if (!texture.loadFromFile(path))

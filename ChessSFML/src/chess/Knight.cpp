@@ -14,10 +14,10 @@ void Knight::Init(ColorCustom c, int x, int y)
 
 	if (color == White)
 	{
-		path = "..\\..\\..\\src\\p2\\wn.png";
+		path = "..\\..\\..\\src\\chess\\Texture\\white_knight.png";
 	}
 	else {
-		path = "..\\..\\..\\src\\p2\\bn.png";
+		path = "..\\..\\..\\src\\chess\\Texture\\black_knight.png";
 	}
 
 	if (!texture.loadFromFile(path))

@@ -14,10 +14,10 @@ void Queen::Init(ColorCustom c, int x, int y)
 
     if (color == White)
     {
-        path = "..\\..\\..\\src\\p2\\wq.png";
+        path = "..\\..\\..\\src\\chess\\Texture\\white_queen.png";
     }
     else {
-        path = "..\\..\\..\\src\\p2\\bq.png";
+        path = "..\\..\\..\\src\\chess\\Texture\\black_queen.png";
     }
 
     if (!texture.loadFromFile(path))

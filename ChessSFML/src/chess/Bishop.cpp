@@ -14,10 +14,10 @@ void Bishop::Init(ColorCustom c, int x, int y)
 
     if (color == White)
     {
-        path = "..\\..\\..\\src\\p2\\wb.png";
+        path = "..\\..\\..\\src\\chess\\Texture\\white_bishop.png";
     }
     else {
-        path = "..\\..\\..\\src\\p2\\bb.png";
+        path = "..\\..\\..\\src\\chess\\Texture\\black_bishop.png";
     }
 
     if (!texture.loadFromFile(path))

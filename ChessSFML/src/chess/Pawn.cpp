@@ -16,10 +16,10 @@ void Pawn::Init(ColorCustom c, int x, int y)
 
     if (color == White)
     {
-        path = "..\\..\\..\\src\\p2\\wp.png";
+        path = "..\\..\\..\\src\\chess\\Texture\\white_pawn.png";
     }
     else {
-        path = "..\\..\\..\\src\\p2\\bp.png";
+        path = "..\\..\\..\\src\\chess\\Texture\\black_pawn.png";
     }
 
     if (!texture.loadFromFile(path))

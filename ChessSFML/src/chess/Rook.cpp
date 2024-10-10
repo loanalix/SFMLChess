@@ -14,10 +14,10 @@ void Rook::Init(ColorCustom c, int x, int y)
 
     if (color == White)
     {
-        path = "..\\..\\..\\src\\p2\\wr.png";
+        path = "..\\..\\..\\src\\chess\\Texture\\white_rook.png";
     }
     else {
-        path = "..\\..\\..\\src\\p2\\br.png";
+        path = "..\\..\\..\\src\\chess\\Texture\\black_rook.png";
     }
 
     if (!texture.loadFromFile(path))
