@@ -1,17 +1,22 @@
 #pragma once
+#include "list"
+#include "Queen.h"
 
-#include "Piece.h"
-#include "Board.h"
 class Pawn : public Piece
 {
 public:
-    Pawn();
-    ~Pawn();
+	Pawn() {};
+	~Pawn() {};
 
-    void InitPiece(int posX, int posY, char symbole, int sense, char team) override;
-    int CheckMove(int moveCaseX, int moveCaseY, Board* board) override;
+	bool Move(Piece* board[64], int pos1) override;
+	std::list<int> GetPossibleMoves(Piece* board[64], int pos1) override;
+	void Init(ColorCustom c, int x, int y) override;
+	void MoveCode(Piece* board[64], int pos1);
+	void SpecialMove(Piece* board[64], int pos1);
 
-private:
-    bool firstTurn;
+	bool isFirstMove = true;
+	bool isQueen = false;
+
+	Queen queen;
 };
 

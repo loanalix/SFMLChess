@@ -1,14 +1,13 @@
 #pragma once
 
-#include "Piece.h"
-
 class Rook : public Piece
 {
 public:
-	Rook();
-	~Rook();
+	Rook() {};
+	~Rook() {};
 
-	int CheckMove(int moveCaseX, int moveCaseY, Board* board) override;
-
+	bool Move(Piece* board[64], int pos1) override;
+	std::list<int> GetPossibleMoves(Piece* board[64], int pos1) override;
+	void Init(ColorCustom c, int x, int y) override;
 };
 

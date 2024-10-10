@@ -1,38 +1,170 @@
-#include"pch.h"
+#include "pch.h"
 #include "Rook.h"
-#include "Board.h"
 
-Rook::Rook() {}
+void Rook::Init(ColorCustom c, int x, int y)
+{
+    icon = 'R';
 
-int Rook::CheckMove(int moveCaseX, int moveCaseY, Board* board) {
+    color = c;
 
-    int incrementX = (moveCaseX > m_posX) ? 1 : (moveCaseX < m_posX) ? -1 : 0; // Direction horizontale
-    int incrementY = (moveCaseY > m_posY) ? 1 : (moveCaseY < m_posY) ? -1 : 0; // Direction verticale
+    posX = x;
+    posY = y;
 
-    // Vérification du mouvement horizontal
-    if (incrementX != 0) {
-        for (int i = m_posX + incrementX; i != moveCaseX; i += incrementX) {
-            if (board->m_TabPiece[m_posY * 8 + i] != nullptr) {
-                return 0; // Mouvement invalide, case occupée
-            }
-        }
+    string path = "";
+
+    if (color == White)
+    {
+        path = "..\\..\\..\\src\\p2\\wr.png";
     }
-    // Vérification du mouvement vertical
-    else if (incrementY != 0) {
-        for (int j = m_posY + incrementY; j != moveCaseY; j += incrementY) {
-            if (board->m_TabPiece[j * 8 + m_posX] != nullptr) {
-                return 0; // Mouvement invalide, case occupée
-            }
-        }
+    else {
+        path = "..\\..\\..\\src\\p2\\br.png";
     }
 
-    // Vérifier si la case de destination est occupée par une pièce de la même équipe
-    Piece* destinationPiece = board->m_TabPiece[moveCaseY * 8 + moveCaseX];
-    if (destinationPiece != nullptr && destinationPiece->m_team == m_team) {
-        return 0; // Mouvement invalide, pièce de la même équipe
+    if (!texture.loadFromFile(path))
+    {
+        cout << "n";
+        // erreur...
     }
-
-    return 1; // Mouvement valide
 }
 
-Rook::~Rook() {}
+bool Rook::Move(Piece* board[64], int pos1) {
+    int y = pos1 / 8;
+    int x = pos1 % 8;
+    int index = posY * 8 + posX;
+    int diffX = x - posX;
+    int diffY = y - posY;
+    int diffXAbs = abs(diffX);
+    int diffYAbs = abs(diffY);
+
+    if (diffYAbs == 0)
+    {
+        for (int i = 1; i < diffXAbs; i++)
+        {
+            int indexCaseX = posX + (i * (diffX / diffXAbs));
+
+            if (board[y * 8 + indexCaseX] != nullptr)
+            {
+                return false;
+            }
+        }
+        board[pos1] = board[index];
+        board[index] = nullptr;
+
+        posY = y;
+        posX = x;
+
+        return true;
+
+    }
+    else if (diffXAbs == 0)
+    {
+        for (int i = 1; i < diffYAbs; i++)
+        {
+            int indexCaseY = posY + (i * (diffY / diffYAbs));
+
+            if (board[indexCaseY * 8 + x] != nullptr)
+            {
+                return false;
+            }
+        }
+        board[pos1] = board[index];
+        board[index] = nullptr;
+
+        posY = y;
+        posX = x;
+
+        return true;
+    }
+
+    return false;
+}
+
+std::list<int> Rook::GetPossibleMoves(Piece* board[64], int pos1)
+{
+    std::list<int> possibleMoves;
+
+    int y = pos1 / 8;  // Row (y-axis)
+    int x = pos1 % 8;  // Column (x-axis)
+
+    // Check upward movement (y decreases)
+    for (int i = 1; i < 8; ++i)
+    {
+        int newPos = pos1 - i * 8;
+        if (newPos < 0) break;  // Out of bounds
+        if (board[newPos] == nullptr)  // Empty square
+        {
+            possibleMoves.push_back(newPos);
+        }
+        else if (board[newPos]->color != this->color)  // Opponent's piece
+        {
+            possibleMoves.push_back(newPos);
+            break;  // Stop further movement in this direction (capture)
+        }
+        else  // Own piece
+        {
+            break;  // Blocked by own piece
+        }
+    }
+
+    // Check downward movement (y increases)
+    for (int i = 1; i < 8; ++i)
+    {
+        int newPos = pos1 + i * 8;
+        if (newPos >= 64) break;  // Out of bounds
+        if (board[newPos] == nullptr)  // Empty square
+        {
+            possibleMoves.push_back(newPos);
+        }
+        else if (board[newPos]->color != this->color)  // Opponent's piece
+        {
+            possibleMoves.push_back(newPos);
+            break;  // Stop further movement in this direction (capture)
+        }
+        else  // Own piece
+        {
+            break;  // Blocked by own piece
+        }
+    }
+
+    // Check leftward movement (x decreases)
+    for (int i = 1; i < 8; ++i)
+    {
+        int newPos = pos1 - i;
+        if (newPos % 8 == 7) break;  // Out of bounds
+        if (board[newPos] == nullptr)  // Empty square
+        {
+            possibleMoves.push_back(newPos);
+        }
+        else if (board[newPos]->color != this->color)  // Opponent's piece
+        {
+            possibleMoves.push_back(newPos);
+            break;  // Stop further movement in this direction (capture)
+        }
+        else  // Own piece
+        {
+            break;  // Blocked by own piece
+        }
+    }
+
+    // Check rightward movement (x increases)
+    for (int i = 1; i < 8; ++i)
+    {
+        int newPos = pos1 + i;
+        if (newPos % 8 == 0) break;  // Out of bounds
+        if (board[newPos] == nullptr)  // Empty square
+        {
+            possibleMoves.push_back(newPos);
+        }
+        else if (board[newPos]->color != this->color)  // Opponent's piece
+        {
+            possibleMoves.push_back(newPos);
+            break;  // Stop further movement in this direction (capture)
+        }
+        else  // Own piece
+        {
+            break;  // Blocked by own piece
+        }
+    }
+
+    return possibleMoves;
+}

@@ -1,60 +1,314 @@
-#include"pch.h"
+#include "pch.h"
 #include "Pawn.h"
-#include "Board.h"
 
-Pawn::Pawn() {}
+#include <complex.h>
 
-
-
-void Pawn::InitPiece(int posX, int posY, char symbole, int sense, char team)
+void Pawn::Init(ColorCustom c, int x, int y)
 {
+    icon = 'P';
 
-    Piece::InitPiece(posX, posY, symbole, sense, team);
+    color = c;
 
-    firstTurn = true;
+    posX = x;
+    posY = y;
+
+    string path = "";
+
+    if (color == White)
+    {
+        path = "..\\..\\..\\src\\p2\\wp.png";
+    }
+    else {
+        path = "..\\..\\..\\src\\p2\\bp.png";
+    }
+
+    if (!texture.loadFromFile(path))
+    {
+        cout << "n";
+        // erreur...
+    }
+}
+
+bool Pawn::Move(Piece* board[64], int pos1) {
+    if (isQueen)
+    {
+        //Queen Movement
+        bool isMove;
+
+        isMove = queen.Move(board, pos1);
+        posX = queen.posX;
+        posY = queen.posY;
+        return isMove;
+    }
+
+    int y = pos1 / 8;
+    int x = pos1 % 8;
+    int diffX = x - posX;
+    int xAbs = abs(x);
+    int diffXAbs = abs(diffX);
+    int index = posY * 8 + posX;
+
+    if ((y == posY - 1 && diffXAbs == 1 && color == Black) || (y == posY + 1 && diffXAbs == 1 && color == White)) {
+        if (board[pos1] != nullptr)
+        {
+            MoveCode(board, pos1);
+            /*board[pos1] = board[index];
+            board[index] = nullptr;
+
+            posY = y;
+            posX = x;*/
+
+            isFirstMove = false;
+
+            return true;
+        }
+        return false;
+    }
+
+    if (board[pos1] != nullptr)
+    {
+        return false;
+    }
+
+    if (isFirstMove)
+    {
+        if ((y == posY - 2 && x == posX && color == Black) || (y == posY + 2 && x == posX && color == White)) {
+            if (board[pos1 + 8] == nullptr && color == Black || board[pos1 - 8] == nullptr && color == White)
+            {
+                MoveCode(board, pos1);
+                /*board[pos1] = board[index];
+                board[index] = nullptr;
+
+                posY = y;
+                posX = x;*/
+
+                isFirstMove = false;
+
+                return true;
+            }
+        }
+
+    }
+
+    if (y == posY - 1 && color == Black || y == posY + 1 && color == White) {
+
+        MoveCode(board, pos1);
+        /*board[pos1] = board[index];
+        board[index] = nullptr;
+
+        posY = y;
+        posX = x;*/
+
+        isFirstMove = false;
+
+        return true;
+    }
+
+    return false;
+}
+
+void Pawn::SpecialMove(Piece* board[64], int pos1)
+{
+    int y = pos1 / 8;
+    int x = pos1 % 8;
+    int index = posY * 8 + posX;
+
+    isFirstMove = false;
+
+    if (board[index]->color == White && y == 7 && isQueen == false)
+    {
+        queen = Queen();
+        queen.Init(White, posX, posY);
+        isQueen = true;
+        texture = queen.texture;
+        icon = 'Q';
+    }
+    else if (board[index]->color == Black && y == 0 && isQueen == false)
+    {
+        queen = Queen();
+        queen.Init(Black, posX, posY);
+        isQueen = true;
+        texture = queen.texture;
+        icon = 'Q';
+    }
+}
+
+//
+//bool Pawn::Move(Piece* board[64], int pos1) {
+//	if (isQueen)
+//	{
+//        //Queen Movement
+//        bool isMove;
+//
+//        isMove = queen.Move(board, pos1);
+//        posX = queen.posX;
+//        posY = queen.posY;
+//		return isMove;
+//	}
+//
+//	int y = pos1 / 8;
+//	int x = pos1 % 8;
+//	int diffX = x - posX;
+//	int xAbs = abs(x);
+//	int diffXAbs = abs(diffX);
+//	int index = posY * 8 + posX;
+//
+//	if ((y == posY - 1 && diffXAbs == 1 && color == Black) || (y == posY + 1 && diffXAbs == 1 && color == White)) {
+//		if (board[pos1] != nullptr)
+//		{
+//			MoveCode(board, pos1);
+//			/*board[pos1] = board[index];
+//			board[index] = nullptr;
+//
+//			posY = y;
+//            posX = x;*/
+//
+//            isFirstMove = false;
+//
+//			return true;
+//		}
+//		return false;
+//	}
+//
+//	if (board[pos1] != nullptr)
+//	{
+//		return false;
+//	}
+//
+//	if (isFirstMove)
+//	{
+//		if ((y == posY - 2 && x == posX && color == Black) || (y == posY + 2 && x == posX && color == White)) {
+//			if (board[pos1 + 8] == nullptr && color == Black || board[pos1 - 8] == nullptr && color == White)
+//			{
+//                MoveCode(board, pos1);
+//                /*board[pos1] = board[index];
+//                board[index] = nullptr;
+//
+//                posY = y;
+//                posX = x;*/
+//
+//				isFirstMove = false;
+//
+//				return true;
+//			}
+//		}
+//		
+//	}
+//	
+//	if (y == posY - 1 && color == Black || y == posY + 1 && color == White){
+//
+//        MoveCode(board, pos1);
+//        /*board[pos1] = board[index];
+//        board[index] = nullptr;
+//
+//        posY = y;
+//        posX = x;*/
+//
+//        isFirstMove = false;
+//
+//		return true;
+//	}
+//
+//	return false;
+//}
+
+void Pawn::MoveCode(Piece* board[64], int pos1)
+{
+    int y = pos1 / 8;
+    int x = pos1 % 8;
+    int index = posY * 8 + posX;
+
+    if (board[index]->color == White && y == 7 && isQueen == false)
+    {
+        queen = Queen();
+        queen.Init(White, posX, posY);
+        isQueen = true;
+        texture = queen.texture;
+        icon = 'Q';
+    }
+    else if (board[index]->color == Black && y == 0 && isQueen == false)
+    {
+        queen = Queen();
+        queen.Init(Black, posX, posY);
+        isQueen = true;
+        texture = queen.texture;
+        icon = 'Q';
+    }
+
+    board[pos1] = board[index];
+    board[index] = nullptr;
+
+    posY = y;
+    posX = x;
+
 
 }
 
-
-
-int Pawn::CheckMove(int moveCaseX, int moveCaseY, Board* board)
+std::list<int> Pawn::GetPossibleMoves(Piece* board[64], int pos1)
 {
-    int direction = (m_team == 'w') ? 1 : -1;
-    int startRow = (m_team == 'w') ? 1 : 6;
-
-    // Premier mouvement de 2 cases
-    if (firstTurn && moveCaseY == m_posY + 2 * direction && m_posX == moveCaseX) {
-        if (board->m_TabPiece[m_posY + direction * 1 * 8 + m_posX] == nullptr &&
-            board->m_TabPiece[m_posY + direction * 2 * 8 + m_posX] == nullptr) {
-            firstTurn = false;
-            return 1; // Mouvement valide
-        }
-        return 0; // Mouvement invalide
+    if (isQueen)
+    {
+        //Queen possible movement
+        return queen.GetPossibleMoves(board, pos1);
     }
 
-    // Mouvement normal de 1 case
-    if (moveCaseY == m_posY + direction && m_posX == moveCaseX) {
-        if (board->m_TabPiece[moveCaseY * 8 + moveCaseX] == nullptr) {
-            firstTurn = false;
-            return 1; // Mouvement valide
+    std::list<int> possibleMoves;
+
+    int y = pos1 / 8;
+    int x = pos1 % 8;
+    int index = posY * 8 + posX;
+
+    // Check if the pawn can move forward
+    if (color == Black)
+    {
+        if (board[pos1 - 8] == nullptr)
+        {
+            possibleMoves.push_back(pos1 - 8);
+
+            // Check if it is the pawn's first move
+            if (isFirstMove && board[pos1 - 16] == nullptr)
+            {
+                possibleMoves.push_back(pos1 - 16);
+            }
         }
-        return 0; // Mouvement invalide
+    }
+    else if (color == White)
+    {
+        if (board[pos1 + 8] == nullptr)
+        {
+            possibleMoves.push_back(pos1 + 8);
+
+            // Check if it is the pawn's first move
+            if (isFirstMove && board[pos1 + 16] == nullptr)
+            {
+                possibleMoves.push_back(pos1 + 16);
+            }
+        }
     }
 
-    // Capture en diagonale
-    if (moveCaseY == m_posY + direction && (moveCaseX == m_posX + 1 || moveCaseX == m_posX - 1)) {
-        // Vérifier si la case contient une pièce ennemie
-        Piece* targetPiece = board->m_TabPiece[moveCaseY * 8 + moveCaseX];
-        if (targetPiece != nullptr && targetPiece->m_team != m_team) {
-            firstTurn = false;
-            return 1; // Mouvement valide
+    // Check if the pawn can capture diagonally
+    if (color == Black)
+    {
+        if (x > 0 && board[pos1 - 7] != nullptr && board[pos1 - 7]->color == White)
+        {
+            possibleMoves.push_back(pos1 - 7);
         }
-        return 0; // Mouvement invalide
+        if (x < 7 && board[pos1 - 9] != nullptr && board[pos1 - 9]->color == White)
+        {
+            possibleMoves.push_back(pos1 - 9);
+        }
+    }
+    else if (color == White)
+    {
+        if (x > 0 && board[pos1 + 9] != nullptr && board[pos1 + 9]->color == Black)
+        {
+            possibleMoves.push_back(pos1 + 9);
+        }
+        if (x < 7 && board[pos1 + 7] != nullptr && board[pos1 + 7]->color == Black)
+        {
+            possibleMoves.push_back(pos1 + 7);
+        }
     }
 
-    return 0; // Aucune autre condition remplie
+    return possibleMoves;
 }
-
-
-
-Pawn::~Pawn() {}

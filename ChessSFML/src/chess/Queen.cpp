@@ -1,76 +1,277 @@
-#include"pch.h"
+#include "pch.h"
 #include "Queen.h"
 
-Queen::Queen() {}
+void Queen::Init(ColorCustom c, int x, int y)
+{
+    icon = 'Q';
 
-int Queen::HorizontaVerticallMove(int moveCaseX, int moveCaseY, Board* board) {
-    int incrementX = (moveCaseX > m_posX) ? 1 : (moveCaseX < m_posX) ? -1 : 0; // Direction horizontale
-    int incrementY = (moveCaseY > m_posY) ? 1 : (moveCaseY < m_posY) ? -1 : 0; // Direction verticale
+    color = c;
 
-    // Vérification horizontale
-    if (incrementX != 0) {
-        for (int i = m_posX + incrementX; i != moveCaseX; i += incrementX) {
-            if (board->m_TabPiece[m_posY * 8 + i] != nullptr) {
-                return 0; // Mouvement invalide
+    posX = x;
+    posY = y;
+
+    string path = "";
+
+    if (color == White)
+    {
+        path = "..\\..\\..\\src\\p2\\wq.png";
+    }
+    else {
+        path = "..\\..\\..\\src\\p2\\bq.png";
+    }
+
+    if (!texture.loadFromFile(path))
+    {
+        cout << "n";
+        // erreur...
+    }
+}
+
+bool Queen::Move(Piece* board[64], int pos1) {
+    int y = pos1 / 8;
+    int x = pos1 % 8;
+    int index = posY * 8 + posX;
+    int diffX = x - posX;
+    int diffY = y - posY;
+    int diffXAbs = abs(diffX);
+    int diffYAbs = abs(diffY);
+
+    if (diffYAbs == 0)
+    {
+        for (int i = 1; i < diffXAbs; i++)
+        {
+            int indexCaseX = posX + (i * (diffX / diffXAbs));
+
+            if (board[y * 8 + indexCaseX] != nullptr)
+            {
+                return false;
             }
         }
+        board[pos1] = board[index];
+        board[index] = nullptr;
+
+        posY = y;
+        posX = x;
+
+        return true;
+
     }
-    // Vérification verticale
-    else if (incrementY != 0) {
-        for (int j = m_posY + incrementY; j != moveCaseY; j += incrementY) {
-            if (board->m_TabPiece[j * 8 + m_posX] != nullptr) {
-                return 0; // Mouvement invalide
+    else if (diffXAbs == 0)
+    {
+        for (int i = 1; i < diffYAbs; i++)
+        {
+            int indexCaseY = posY + (i * (diffY / diffYAbs));
+
+            if (board[indexCaseY * 8 + x] != nullptr)
+            {
+                return false;
             }
         }
+        board[pos1] = board[index];
+        board[index] = nullptr;
+
+        posY = y;
+        posX = x;
+
+        return true;
     }
 
-    // Vérifier si la case de destination est occupée par une pièce de la même équipe
-    Piece* destinationPiece = board->m_TabPiece[moveCaseY * 8 + moveCaseX];
-    if (destinationPiece != nullptr && destinationPiece->m_team == m_team) {
-        return 0; // Mouvement invalide
+    if (diffXAbs == diffYAbs)
+    {
+        for (int i = 1; i < diffXAbs; i++)
+        {
+            int indexCaseX = posX + (i * (diffX / diffXAbs));
+            int indexCaseY = posY + (i * (diffY / diffYAbs));
+
+            if (board[indexCaseY * 8 + indexCaseX] != nullptr)
+            {
+                return false;
+            }
+        }
+        board[pos1] = board[index];
+        board[index] = nullptr;
+
+        posY = y;
+        posX = x;
+
+        return true;
     }
 
-    return 1; // Mouvement valide
+    return false;
 }
 
-int Queen::DiagonalMove(int moveCaseX, int moveCaseY, Board* board) {
-    int deltaX = moveCaseX - m_posX;
-    int deltaY = moveCaseY - m_posY;
+std::list<int> Queen::GetPossibleMoves(Piece* board[64], int pos1)
+{
+    std::list<int> possibleMoves;
 
-    if (abs(deltaX) != abs(deltaY) || (deltaX == 0 && deltaY == 0)) {
-        return 0; // Mouvement invalide
-    }
+    int y = pos1 / 8;  // Row (y-axis)
+    int x = pos1 % 8;  // Column (x-axis)
 
-    int stepX = (deltaX > 0) ? 1 : -1;
-    int stepY = (deltaY > 0) ? 1 : -1;
-
-    // Utiliser une boucle for pour itérer à travers les cases sur la diagonale
-    for (int x = m_posX + stepX, y = m_posY + stepY; x != moveCaseX && y != moveCaseY; x += stepX, y += stepY) {
-        if (board->m_TabPiece[y * 8 + x] != nullptr) {
-            return 0; // Mouvement invalide
+    // Check upward movement (y decreases)
+    for (int i = 1; i < 8; ++i)
+    {
+        int newPos = pos1 - i * 8;
+        if (newPos < 0) break;  // Out of bounds
+        if (board[newPos] == nullptr)  // Empty square
+        {
+            possibleMoves.push_back(newPos);
+        }
+        else if (board[newPos]->color != this->color)  // Opponent's piece
+        {
+            possibleMoves.push_back(newPos);
+            break;  // Stop further movement in this direction (capture)
+        }
+        else  // Own piece
+        {
+            break;  // Blocked by own piece
         }
     }
 
-    // Vérifier si la case de destination est occupée par une pièce de la même équipe
-    Piece* destinationPiece = board->m_TabPiece[moveCaseY * 8 + moveCaseX];
-    if (destinationPiece != nullptr && destinationPiece->m_team == m_team) {
-        return 0; // Mouvement invalide
+    // Check downward movement (y increases)
+    for (int i = 1; i < 8; ++i)
+    {
+        int newPos = pos1 + i * 8;
+        if (newPos >= 64) break;  // Out of bounds
+        if (board[newPos] == nullptr)  // Empty square
+        {
+            possibleMoves.push_back(newPos);
+        }
+        else if (board[newPos]->color != this->color)  // Opponent's piece
+        {
+            possibleMoves.push_back(newPos);
+            break;  // Stop further movement in this direction (capture)
+        }
+        else  // Own piece
+        {
+            break;  // Blocked by own piece
+        }
     }
 
-    return 1; // Mouvement valide
+    // Check leftward movement (x decreases)
+    for (int i = 1; i < 8; ++i)
+    {
+        int newPos = pos1 - i;
+        if (newPos % 8 == 7) break;  // Out of bounds
+        if (board[newPos] == nullptr)  // Empty square
+        {
+            possibleMoves.push_back(newPos);
+        }
+        else if (board[newPos]->color != this->color)  // Opponent's piece
+        {
+            possibleMoves.push_back(newPos);
+            break;  // Stop further movement in this direction (capture)
+        }
+        else  // Own piece
+        {
+            break;  // Blocked by own piece
+        }
+    }
+
+    // Check rightward movement (x increases)
+    for (int i = 1; i < 8; ++i)
+    {
+        int newPos = pos1 + i;
+        if (newPos % 8 == 0) break;  // Out of bounds
+        if (board[newPos] == nullptr)  // Empty square
+        {
+            possibleMoves.push_back(newPos);
+        }
+        else if (board[newPos]->color != this->color)  // Opponent's piece
+        {
+            possibleMoves.push_back(newPos);
+            break;  // Stop further movement in this direction (capture)
+        }
+        else  // Own piece
+        {
+            break;  // Blocked by own piece
+        }
+    }
+
+
+    // Check top-left diagonal (y decreases, x decreases)
+    for (int i = 1; i < 8; ++i)
+    {
+        int newPos = pos1 - i * 9;  // Moving diagonally top-left
+        if (newPos < 0 || newPos % 8 == 7) break;  // Out of bounds (left edge)
+
+        if (board[newPos] == nullptr)  // Empty square
+        {
+            possibleMoves.push_back(newPos);
+        }
+        else if (board[newPos]->color != this->color)  // Opponent's piece
+        {
+            possibleMoves.push_back(newPos);
+            break;  // Capture the opponent and stop further movement
+        }
+        else  // Own piece
+        {
+            break;  // Blocked by own piece
+        }
+    }
+
+    // Check top-right diagonal (y decreases, x increases)
+    for (int i = 1; i < 8; ++i)
+    {
+        int newPos = pos1 - i * 7;  // Moving diagonally top-right
+        if (newPos < 0 || newPos % 8 == 0) break;  // Out of bounds (right edge)
+
+        if (board[newPos] == nullptr)  // Empty square
+        {
+            possibleMoves.push_back(newPos);
+        }
+        else if (board[newPos]->color != this->color)  // Opponent's piece
+        {
+            possibleMoves.push_back(newPos);
+            break;  // Capture the opponent and stop further movement
+        }
+        else  // Own piece
+        {
+            break;  // Blocked by own piece
+        }
+    }
+
+    // Check bottom-left diagonal (y increases, x decreases)
+    for (int i = 1; i < 8; ++i)
+    {
+        int newPos = pos1 + i * 7;  // Moving diagonally bottom-left
+        if (newPos >= 64 || newPos % 8 == 7) break;  // Out of bounds (left edge)
+
+        if (board[newPos] == nullptr)  // Empty square
+        {
+            possibleMoves.push_back(newPos);
+        }
+        else if (board[newPos]->color != this->color)  // Opponent's piece
+        {
+            possibleMoves.push_back(newPos);
+            break;  // Capture the opponent and stop further movement
+        }
+        else  // Own piece
+        {
+            break;  // Blocked by own piece
+        }
+    }
+
+    // Check bottom-right diagonal (y increases, x increases)
+    for (int i = 1; i < 8; ++i)
+    {
+        int newPos = pos1 + i * 9;  // Moving diagonally bottom-right
+        if (newPos >= 64 || newPos % 8 == 0) break;  // Out of bounds (right edge)
+
+        if (board[newPos] == nullptr)  // Empty square
+        {
+            possibleMoves.push_back(newPos);
+        }
+        else if (board[newPos]->color != this->color)  // Opponent's piece
+        {
+            possibleMoves.push_back(newPos);
+            break;  // Capture the opponent and stop further movement
+        }
+        else  // Own piece
+        {
+            break;  // Blocked by own piece
+        }
+    }
+
+
+    return possibleMoves;
 }
-
-int Queen::CheckMove(int moveCaseX, int moveCaseY, Board* board) {
-    // Vérification pour les mouvements horizontaux/verticaux
-    if (moveCaseX == m_posX || moveCaseY == m_posY) {
-        return HorizontaVerticallMove(moveCaseX, moveCaseY, board);
-    }
-    // Vérification pour les mouvements diagonaux
-    else if (abs(moveCaseX - m_posX) == abs(moveCaseY - m_posY)) {
-        return DiagonalMove(moveCaseX, moveCaseY, board);
-    }
-
-    return 0; // Mouvement invalide
-}
-
-Queen::~Queen() {}

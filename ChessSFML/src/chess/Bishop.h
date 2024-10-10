@@ -1,15 +1,12 @@
 #pragma once
 
-#include "Piece.h"
-
 class Bishop : public Piece
 {
 public:
-	Bishop();
-	virtual ~Bishop();
+	Bishop() {};
+	~Bishop() {};
 
-
-	int CheckMove(int moveCaseX, int moveCaseY, Board* board) override;
-
+	bool Move(Piece* board[64], int pos1) override;
+	std::list<int> GetPossibleMoves(Piece* board[64], int pos1);
+	void Init(ColorCustom c, int x, int y) override;
 };
-

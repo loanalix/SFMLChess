@@ -1,57 +1,159 @@
 #include "pch.h"
 #include "Board.h"
-#include "Pawn.h"
-#include "TextureManager.h"
 
-Board::Board(){}
-
-
-void Board::InitBoard(sf::RenderWindow& window)
+void Board::Init()
 {
-    sf::RectangleShape rectangle(sf::Vector2f(100, 100));  // Taille de chaque case de l'échiquier
-    bool isColor = true;  // On démarre avec une couleur
-
-    for (int i = 0; i < 64; i++) {
-        m_TabPiece[i] = nullptr;
-    }
-
-    Pawn* pawn = new Pawn();
-    pawn->InitPiece(0, 1, 'P', 1, 'w'); // Exemple de pion blanc
-    m_TabPiece[1 * 8 + 0] = pawn;
-
-    for (int row = 0; row < 8; row++)
-    {
-        for (int col = 0; col < 8; col++)
-        {
-
-            rectangle.setPosition(sf::Vector2f(col * 100, row * 100));
-
-            if (isColor)
-            {
-                rectangle.setFillColor(sf::Color::Black);
-            }
-            else
-            {
-                rectangle.setFillColor(sf::Color::White);
-            }
-            isColor = !isColor;  
-
-            window.draw(rectangle);
-        }
-        isColor = !isColor;  
-    }
+	InitBoard();
 }
 
-void Board::Draw(sf::RenderWindow& window)
+#ifdef _LIGHT
+
+void Board::InitBoard()
 {
+	for (int y = 0; y < 8; y++)
+	{
 
-    InitBoard(window); 
+		for (int x = 0; x < 8; x++)
+		{
+			int index = y * 8 + x;
+			board[index] = nullptr;
+			if (y == 0 || y == 1)
+			{
+				Pawn* pawn = new Pawn();
+				CreatePiece(pawn, White, x, y, index);
+			}
+			else if (y == 6 || y == 7)
+			{
+				Pawn* pawn = new Pawn();
+				CreatePiece(pawn, Black, x, y, index);
+			}
+			else {
+				board[index] = nullptr;
+			}
 
-    for (auto& sprite : m_sprites) {
-        window.draw(sprite);  
-    }
+			//Queen
+			if (index == 4)
+			{
+				Queen* queen = new Queen();
+				CreatePiece(queen, White, x, y, index);
+			}
+			else if (index == 60)
+			{
+				Queen* queen = new Queen();
+				CreatePiece(queen, Black, x, y, index);
+			}
+
+			//King
+			else if (index == 3)
+			{
+				King* king = new King();
+				CreatePiece(king, White, x, y, index);
+			}
+			else if (index == 59)
+			{
+				King* king = new King();
+				CreatePiece(king, Black, x, y, index);
+			}
+		}
+	}
+}
+#endif
+
+#ifndef _LIGHT
+
+void Board::InitBoard()
+{
+	for (int y = 0; y < 8; y++)
+	{
+
+		for (int x = 0; x < 8; x++)
+		{
+			int index = y * 8 + x;
+			board[index] = nullptr;
+			if (y == 0 || y == 1)
+			{
+				Pawn* pawn = new Pawn();
+				CreatePiece(pawn, White, x, y, index);
+			}
+			else if (y == 6 || y == 7)
+			{
+				Pawn* pawn = new Pawn();
+				CreatePiece(pawn, Black, x, y, index);
+			}
+			else {
+				board[index] = nullptr;
+			}
+
+			//Knight
+			if (index == 1 || index == 6)
+			{
+				Knight* knight = new Knight();
+				CreatePiece(knight, White, x, y, index);
+			}
+			else if (index == 62 || index == 57)
+			{
+				Knight* knight = new Knight();
+				CreatePiece(knight, Black, x, y, index);
+			}
+
+			//Rook
+			else if (index == 0 || index == 7)
+			{
+				Rook* rook = new Rook();
+				CreatePiece(rook, White, x, y, index);
+			}
+			else if (index == 63 || index == 56)
+			{
+				Rook* rook = new Rook();
+				CreatePiece(rook, Black, x, y, index);
+			}
+
+			//Bishop
+			else if (index == 2 || index == 5)
+			{
+				Bishop* bishop = new Bishop();
+				CreatePiece(bishop, White, x, y, index);
+			}
+			else if (index == 61 || index == 58)
+			{
+				Bishop* bishop = new Bishop();
+				CreatePiece(bishop, Black, x, y, index);
+			}
+
+			//Queen
+			else if (index == 4)
+			{
+				Queen* queen = new Queen();
+				CreatePiece(queen, White, x, y, index);
+			}
+			else if (index == 60)
+			{
+				Queen* queen = new Queen();
+				CreatePiece(queen, Black, x, y, index);
+			}
+
+			//King
+			else if (index == 3)
+			{
+				King* king = new King();
+				CreatePiece(king, White, x, y, index);
+			}
+			else if (index == 59)
+			{
+				King* king = new King();
+				CreatePiece(king, Black, x, y, index);
+			}
+		}
+	}
 }
 
+#endif
 
-Board::~Board(){}
 
+void Board::CreatePiece(Piece* piece, ColorCustom color, int x, int y, int index) {
+	piece->Init(color, x, y);
+	piece->color = color;
+	piece->posX = x;
+	piece->posY = y;
+	board[index] = piece;
+}

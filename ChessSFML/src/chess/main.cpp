@@ -1,12 +1,9 @@
 #include "pch.h"
 #include "main.h"
-#include "Board.h"
-#include "TextureManager.h"
-
-Board board;
-
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+Game game;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -29,44 +26,43 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	if (RegisterClassExW(&wcex) == 0)
 		return 0;
 
-	HWND hWnd = CreateWindowW(L"WinAppClass", L"Title", WS_OVERLAPPEDWINDOW,CW_USEDEFAULT, 0, 800, 800, nullptr, nullptr, hInstance, nullptr);
+	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+	HWND hWnd = CreateWindowW(L"WinAppClass", L"Title", WS_OVERLAPPEDWINDOW,
+		0, 0, screenWidth, screenHeight, nullptr, nullptr, hInstance, nullptr);
 	if (hWnd == NULL)
 		return 0;
-
-
-	sf::RenderWindow window;
-	window.create(hWnd);
-
-	while (window.isOpen())
-	{
-		sf::Event event;
-
-		MSG msg;
-		while (PeekMessage(&msg, hWnd, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-			if (window.pollEvent(event))
-			{
-				if (event.type == sf::Event::Closed)
-					window.close();
-			}
-		}
-
-		window.clear();
-		board.InitBoard(window);
-		window.display();
-	}
 
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 
+	//Antianialising
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 8;
+
+	// Initialize SFML RenderWindow with the HWND from the created Win32 window
+	sf::RenderWindow renderWindow(hWnd, settings);
+
+	game = Game();
+	game.Init(&renderWindow);
+
 	MSG msg;
-	while (GetMessage(&msg, nullptr, 0, 0))
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+	while (renderWindow.isOpen()) {
+		renderWindow.clear(Color(48, 46, 43));
+
+		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
+		game.GameLoop();
+
+		//renderWindow.draw(shape);
+		renderWindow.display();
 	}
+
 
 #ifdef _DEBUG
 	_CrtDumpMemoryLeaks();
@@ -91,6 +87,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 		EndPaint(hWnd, &ps);
+		break;
+	}
+	case WM_LBUTTONDOWN:  // Left mouse button pressed
+	{
+		// Extract the mouse position from lParam
+		int xPos = LOWORD(lParam);  // Low-order word is the x position
+		int yPos = HIWORD(lParam);  // High-order word is the y position
+
+		// Call game.GameLoop() with mouse position
+		game.MakeMove(xPos, yPos);
+		break;
+	}
+	case WM_RBUTTONDOWN:  // Right mouse button pressed (if needed)
+	{
+		int xPos = LOWORD(lParam);  // Low-order word is the x position
+		int yPos = HIWORD(lParam);  // High-order word is the y position
+
+		// Call game.GameLoop() or another method with mouse position
+		game.MakeMove(xPos, yPos);
 		break;
 	}
 	case WM_DESTROY:

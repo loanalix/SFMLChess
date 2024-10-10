@@ -1,32 +1,26 @@
 #pragma once
-#include<iostream>
-#include <string>
-
-class Board;
+#include "Board.h"
+#include "Draw.h"
 
 class Game
 {
 public:
-
-	Game();
-
-	virtual ~Game();
-
-	void InitGame();
-
+	Game() {};
+	~Game() {};
+	void Init(RenderWindow* r);
+	int ConvertToPosition(char text[2]);
+	void MakeMove(int x, int y);
 	void GameLoop();
+	ColorCustom player = White;
+	RenderWindow* render;
 
-	bool ConvertInput(const char* input, int* posX, int* posY);
+	Board board;
+	bool isGame = true;
+	int move = -1;
 
-	void ChangeTurn();
+	int index1 = -1;
+	int index2 = -1;
 
-private:
-
-	Board* board;
-	char m_turn;
-	std::string error;
-
-	int m_nubTurn;
-
+	list<int> possibleMove = list<int>();
 };
 

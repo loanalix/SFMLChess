@@ -1,41 +1,17 @@
-#include"pch.h"
-#include "Piece.h"
+#include "pch.h"
 
-
-Piece::Piece() {};
-
-
-void Piece::InitPiece(int posX, int posY, char symbole, int sense, char team)
+void Piece::Init(ColorCustom c, int x, int y)
 {
-	m_posX = posX;
-	m_posY = posY;
-	m_symbole = symbole;
-	m_team = team;
 
 }
 
-int Piece::CheckMove(int moveCaseX, int moveCaseY, Board* board)
+bool Piece::Move(Piece* board[64], int pos1)
 {
-	return 0;
+	return false;
 }
 
-bool Piece::Move(int moveX, int moveY, Board* board)
+std::list<int> Piece::GetPossibleMoves(Piece* board[64], int pos1)
 {
-	int checkMove = CheckMove(moveX, moveY, board);
-
-	if (checkMove == 0) return false;
-
-	if (checkMove == 1) {
-		board->m_TabPiece[m_posX * 8 + m_posY] = nullptr;
-		m_posX = moveX;
-		m_posY = moveY;
-		board->m_TabPiece[m_posY * 8 + m_posX] = this;
-
-		return true;
-	}
-
+	std::list<int> possibleMoves;
+	return possibleMoves;
 }
-
-
-
-Piece::~Piece() {};

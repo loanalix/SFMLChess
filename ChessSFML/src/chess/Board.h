@@ -1,22 +1,16 @@
 #pragma once
-#include "pch.h"
-#include "Piece.h"
+#include "vector"
 
-
-class Piece;
+using namespace std;
 
 class Board
 {
+
 public:
-    Board();
-    ~Board();
-    
-    Piece* m_TabPiece[64];
-
-    void InitBoard(sf::RenderWindow& window);
-    void Draw(sf::RenderWindow& window); 
-
-private:
-    std::vector<sf::Sprite> m_sprites; 
+	Board() {};
+	~Board() {};
+	void Init();
+	void InitBoard();
+	void CreatePiece(Piece* piece, ColorCustom color, int x, int y, int index);
+	Piece* board[64];
 };
-
