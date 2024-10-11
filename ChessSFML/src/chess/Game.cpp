@@ -226,7 +226,7 @@ void Game::GameLoop()
 		if (move == 0)
 		{
 			isGame = false;
-			cout << "\nFin de la demo, maitenant donne la moula\n";
+			cout << "\nFin de la demo \n";
 		}
 
 		if (player == White)

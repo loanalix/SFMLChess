@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Pawn.h"
 
-#include <complex.h>
+
 
 void Pawn::Init(ColorCustom c, int x, int y)
 {

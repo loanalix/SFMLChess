@@ -23,7 +23,6 @@ void Knight::Init(ColorCustom c, int x, int y)
 	if (!texture.loadFromFile(path))
 	{
 		cout << "n";
-		// erreur...
 	}
 }
 
