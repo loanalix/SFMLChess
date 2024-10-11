@@ -15,7 +15,11 @@ public:
 	int posY;
 	char icon;
 	ColorCustom color;
-	sf::Texture texture;
+#ifdef _WINDOW
+sf::Texture texture;
+
+#endif // _WINDOW
+
 
 	virtual bool Move(Piece* board[64], int pos1);
 	virtual std::list<int> GetPossibleMoves(Piece* board[64], int pos1);

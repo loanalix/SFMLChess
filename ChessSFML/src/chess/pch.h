@@ -1,15 +1,18 @@
 #pragma once
+#ifdef _WINDOW
 
 #define NOMINMAX
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <windows.h>
+#include "resource.h"
+
+#endif
 
 #include <iostream>
 #include <cstdio>
-#include <windows.h>
 
-#include "resource.h"
 
 enum ColorCustom
 {
@@ -26,7 +29,11 @@ enum ColorCustom
 #include "Rook.h"
 
 using namespace std;
+
+#ifdef _WINDOW
 using namespace sf;
+#endif // 
+
 
 #ifdef _DEBUG
 #include <crtdbg.h>

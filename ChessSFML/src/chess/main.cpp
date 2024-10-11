@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "main.h"
 
+#ifdef _WINDOW
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 Game game;
@@ -121,3 +122,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	return 0;
 }
+#endif // 
+
+
+
+

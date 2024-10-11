@@ -12,6 +12,8 @@ void Pawn::Init(ColorCustom c, int x, int y)
     posX = x;
     posY = y;
 
+
+#ifdef _WINDOW
     string path = "";
 
     if (color == White)
@@ -25,8 +27,8 @@ void Pawn::Init(ColorCustom c, int x, int y)
     if (!texture.loadFromFile(path))
     {
         cout << "n";
-        // erreur...
     }
+#endif 
 }
 
 bool Pawn::Move(Piece* board[64], int pos1) {
@@ -120,7 +122,12 @@ void Pawn::SpecialMove(Piece* board[64], int pos1)
         queen = Queen();
         queen.Init(White, posX, posY);
         isQueen = true;
+        #ifdef _WINDOW
         texture = queen.texture;
+
+        #endif // _WINDOW
+
+
         icon = 'Q';
     }
     else if (board[index]->color == Black && y == 0 && isQueen == false)
@@ -128,8 +135,12 @@ void Pawn::SpecialMove(Piece* board[64], int pos1)
         queen = Queen();
         queen.Init(Black, posX, posY);
         isQueen = true;
+#ifdef _WINDOW
         texture = queen.texture;
+
+#endif
         icon = 'Q';
+
     }
 }
 
@@ -223,7 +234,10 @@ void Pawn::MoveCode(Piece* board[64], int pos1)
         queen = Queen();
         queen.Init(White, posX, posY);
         isQueen = true;
+#ifdef _WINDOW
+
         texture = queen.texture;
+#endif
         icon = 'Q';
     }
     else if (board[index]->color == Black && y == 0 && isQueen == false)
@@ -231,7 +245,10 @@ void Pawn::MoveCode(Piece* board[64], int pos1)
         queen = Queen();
         queen.Init(Black, posX, posY);
         isQueen = true;
+#ifdef _WINDOW
+
         texture = queen.texture;
+#endif
         icon = 'Q';
     }
 

@@ -9,7 +9,7 @@
 #define TOTALMOVE -1
 #endif // !_DEMO
 
-
+#ifdef _WINDOW
 void Game::Init(RenderWindow* r)
 {
 	render = r;
@@ -18,6 +18,7 @@ void Game::Init(RenderWindow* r)
 	board.Init();
 }
 
+#endif // 
 
 
 
@@ -109,8 +110,10 @@ void Game::GameLoop()
 		index1 = -1;
 		index2 = -1;
 	}
+#ifdef _WINDOW
 
 	draw.DrawBoard(board.board, render, index1, possibleMove);
+#endif
 	return;
 
 

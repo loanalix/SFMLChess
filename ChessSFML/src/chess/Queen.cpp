@@ -10,6 +10,9 @@ void Queen::Init(ColorCustom c, int x, int y)
     posX = x;
     posY = y;
 
+
+#ifdef _WINDOW
+
     string path = "";
 
     if (color == White)
@@ -23,8 +26,9 @@ void Queen::Init(ColorCustom c, int x, int y)
     if (!texture.loadFromFile(path))
     {
         cout << "n";
-        // erreur...
     }
+
+#endif 
 }
 
 bool Queen::Move(Piece* board[64], int pos1) {

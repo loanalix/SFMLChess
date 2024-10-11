@@ -17,9 +17,9 @@
 //    for (int y = 0; y < 8; y++)
 //    {
 //        cout << "\n" << "\033[90m" << "   +---+---+---+---+---+---+---+---+" << "\n" << "\033[37m" << " " << y+1 << " "; // Print a newline to separate rows
-//        for (int x = 0; x < 8; x++)
+//        for (int row = 0; row < 8; x++)
 //        {
-//            int index = y * 8 + x;
+//            int index = col * 8 + col;
 //            cout << "\033[40m\033[90m|";
 //
 //            if ((x - y + 10) % 2 != 1)
@@ -60,15 +60,15 @@ void Draw::DrawBoardPossibleMove(Piece** board, list<int> possibleMove)
     system("cls");
     cout << "\n" << "     A   B   C   D   E   F   G   H";
 
-    for (int y = 0; y < 8; y++)
+    for (int col = 0; col < 8; col++)
     {
-        cout << "\n" << "\033[90m" << "   +---+---+---+---+---+---+---+---+" << "\n" << "\033[37m" << " " << y + 1 << " "; // Print a newline to separate rows
-        for (int x = 0; x < 8; x++)
+        cout << "\n" << "\033[90m" << "   +---+---+---+---+---+---+---+---+" << "\n" << "\033[37m" << " " << col + 1 << " "; // Print a newline to separate rows
+        for (int row = 0; row < 8; row++)
         {
-            int index = y * 8 + x;
+            int index = col * 8 + row;
             cout << "\033[40m\033[90m|";
 
-            if ((x - y + 10) % 2 != 1)
+            if ((row - col + 10) % 2 != 1)
             {
                 cout << "\033[41m";
             }
@@ -114,6 +114,7 @@ void Draw::DrawBoardPossibleMove(Piece** board, list<int> possibleMove)
     Reset();
 }
 
+#ifdef _WINDOW
 void Draw::DrawBoard(Piece** board, RenderWindow* render, int indexChoice, list<int> possibleMove) {
 
     /*sf::CircleShape shape(100.f);
@@ -132,20 +133,20 @@ void Draw::DrawBoard(Piece** board, RenderWindow* render, int indexChoice, list<
     render->draw(rectangle);*/
 
 
-    for (int y = 0; y < 8; y++)
+    for (int col = 0; col < 8; col++)
     {
-        for (int x = 0; x < 8; x++)
+        for (int row = 0; row < 8; row++)
         {
-            int index = y * 8 + x;
+            int index = col * 8 + row;
             Piece* piece = board[index];
 
-            int posX = initX + (x * 100);
-            int posY = initY + (y * 100);
+            int posX = initX + (row * 100);
+            int posY = initY + (col * 100);
 
             RectangleShape rectangle(Vector2f(100, 100));
             rectangle.setPosition(Vector2f(posX, posY));
 
-            if ((x - y + 10) % 2 != 1)
+            if ((row - col + 10) % 2 != 1)
             {
                 rectangle.setFillColor(sf::Color(235, 236, 208));
             }
@@ -197,6 +198,9 @@ void Draw::DrawBoard(Piece** board, RenderWindow* render, int indexChoice, list<
     }
 
 }
+#endif // _WINDOW
+
+
 
 void Draw::Reset()
 {

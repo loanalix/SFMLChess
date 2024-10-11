@@ -10,6 +10,8 @@ void King::Init(ColorCustom c, int x, int y)
 	posX = x;
 	posY = y;
 
+#ifdef _WINDOW
+
 	string path = "";
 
 	if (color == White)
@@ -23,8 +25,10 @@ void King::Init(ColorCustom c, int x, int y)
 	if (!texture.loadFromFile(path))
 	{
 		cout << "n";
-		// erreur...
 	}
+
+#endif // _WINDOW
+
 }
 
 bool King::Move(Piece* board[64], int pos1) {

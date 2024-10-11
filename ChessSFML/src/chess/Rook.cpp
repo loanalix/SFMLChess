@@ -10,6 +10,7 @@ void Rook::Init(ColorCustom c, int x, int y)
     posX = x;
     posY = y;
 
+#ifdef _WINDOW
     string path = "";
 
     if (color == White)
@@ -24,6 +25,7 @@ void Rook::Init(ColorCustom c, int x, int y)
     {
         cout << "n";
     }
+#endif
 }
 
 bool Rook::Move(Piece* board[64], int pos1) {
