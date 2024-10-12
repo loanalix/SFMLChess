@@ -15,12 +15,13 @@ public:
 	int posY;
 	char icon;
 	ColorCustom color;
-#ifdef _WINDOW
-sf::Texture texture;
 
-#endif // _WINDOW
+#ifndef _CONSOLE 
+
+	sf::Texture texture;
+
+#endif // !_CONSOLE 
 
 
-	virtual bool Move(Piece* board[64], int pos1);
 	virtual std::list<int> GetPossibleMoves(Piece* board[64], int pos1);
 };

@@ -9,9 +9,7 @@ void Knight::Init(ColorCustom c, int x, int y)
 
 	posX = x;
 	posY = y;
-
-#ifdef _WINDOW
-
+#ifndef _CONSOLE 
 	string path = "";
 
 	if (color == White)
@@ -25,32 +23,9 @@ void Knight::Init(ColorCustom c, int x, int y)
 	if (!texture.loadFromFile(path))
 	{
 		cout << "n";
+		// erreur...
 	}
-#endif // 
-}
-
-bool Knight::Move(Piece* board[64], int pos1) {
-	int y = pos1 / 8;
-	int x = pos1 % 8;
-	int index = posY * 8 + posX;
-	int diffX = posX - x;
-	int diffY = posY - y;
-	diffX = abs(diffX);
-	diffY = abs(diffY);
-
-	if ((diffX == 1 && diffY == 2) || (diffX == 2 && diffY == 1))
-	{
-
-		board[pos1] = board[index];
-		board[index] = nullptr;
-
-		posY = y;
-		posX = x;
-
-		return true;
-	}
-
-	return false;
+#endif // !_CONSOLE
 }
 
 std::list<int> Knight::GetPossibleMoves(Piece* board[64], int pos1)

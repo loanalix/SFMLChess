@@ -1,92 +1,28 @@
 #include "pch.h"
 #include "Draw.h"
 
-//void Draw::DrawBoard(Piece** board, RenderWindow* render)
-//{
-//
-//    sf::CircleShape shape(100.f);
-//    shape.setFillColor(sf::Color::Green);
-//
-//    render->clear();
-//    render->draw(shape);
-//    return;
-//
-//    system("cls");
-//    cout << "\n" << "     A   B   C   D   E   F   G   H";
-//
-//    for (int y = 0; y < 8; y++)
-//    {
-//        cout << "\n" << "\033[90m" << "   +---+---+---+---+---+---+---+---+" << "\n" << "\033[37m" << " " << y+1 << " "; // Print a newline to separate rows
-//        for (int row = 0; row < 8; x++)
-//        {
-//            int index = col * 8 + col;
-//            cout << "\033[40m\033[90m|";
-//
-//            if ((x - y + 10) % 2 != 1)
-//            {
-//                cout << "\033[41m";
-//            }
-//
-//            // Access the piece at (x, y)
-//            Piece* piece = board[index];
-//
-//            if (piece == nullptr)
-//            {
-//                cout << "   ";
-//            }else if (piece->color == White)
-//            {
-//                cout << "\033[37m";
-//            }
-//            else if (piece->color == Black)
-//            {
-//                cout << "\033[34m";
-//            }
-//
-//            // Print the icon if the piece exists, or print a space if it's null
-//            if (piece != nullptr) {
-//                char icon = piece->icon;
-//                cout << " " << icon << " ";
-//            }
-//        }
-//        cout << "\033[40m\033[90m|";
-//    }
-//    cout << "\033[90m" << "\n   +---+---+---+---+---+---+---+---+";
-//    cout << "\n"; // Final newline at the end
-//    Reset();
-//}
-//
-void Draw::DrawBoardPossibleMove(Piece** board, list<int> possibleMove)
+#ifdef _CONSOLE
+
+void Draw::DrawBoard(Piece** board, int indexChoice, list<int> possibleMove)
 {
     system("cls");
     cout << "\n" << "     A   B   C   D   E   F   G   H";
 
-    for (int col = 0; col < 8; col++)
+    for (int y = 0; y < 8; y++)
     {
-        cout << "\n" << "\033[90m" << "   +---+---+---+---+---+---+---+---+" << "\n" << "\033[37m" << " " << col + 1 << " "; // Print a newline to separate rows
-        for (int row = 0; row < 8; row++)
+        cout << "\n" << "\033[90m" << "   +---+---+---+---+---+---+---+---+" << "\n" << "\033[37m" << " " << y + 1 << " "; // Print a newline to separate rows
+        for (int x = 0; x < 8; x++)
         {
-            int index = col * 8 + row;
+            int index = y * 8 + x;
             cout << "\033[40m\033[90m|";
 
-            if ((row - col + 10) % 2 != 1)
+            if ((x - y + 10) % 2 != 1)
             {
                 cout << "\033[41m";
             }
 
             // Access the piece at (x, y)
             Piece* piece = board[index];
-
-            if (find(possibleMove.begin(), possibleMove.end(), index) != possibleMove.end())
-            {
-                if (board[index] == nullptr)
-                {
-                    cout << "\033[43m";
-                }
-                else
-                {
-                    cout << "\033[42m";
-                }
-            }
 
             if (piece == nullptr)
             {
@@ -114,44 +50,30 @@ void Draw::DrawBoardPossibleMove(Piece** board, list<int> possibleMove)
     Reset();
 }
 
-#ifdef _WINDOW
+#endif // _CONSOLE
+
+#ifndef _CONSOLE
+
 void Draw::DrawBoard(Piece** board, RenderWindow* render, int indexChoice, list<int> possibleMove) {
-
-    /*sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-
-    render->clear();
-    render->draw(shape);*/
-
-    /*RectangleShape rectangle(Vector2f(800, 800));
-    rectangle.setPosition(Vector2f(50, 50));
-    rectangle.setFillColor(sf::Color::Transparent);
-
-    rectangle.setOutlineThickness(25);
-    rectangle.setOutlineColor(sf::Color(48, 46, 43));
-
-    render->draw(rectangle);*/
-
-
-    for (int col = 0; col < 8; col++)
+    for (int y = 0; y < 8; y++)
     {
-        for (int row = 0; row < 8; row++)
+        for (int x = 0; x < 8; x++)
         {
-            int index = col * 8 + row;
+            int index = y * 8 + x;
             Piece* piece = board[index];
 
-            int posX = initX + (row * 100);
-            int posY = initY + (col * 100);
+            int posX = initX + (x * 100);
+            int posY = initY + (y * 100);
 
             RectangleShape rectangle(Vector2f(100, 100));
             rectangle.setPosition(Vector2f(posX, posY));
 
-            if ((row - col + 10) % 2 != 1)
+            if ((x - y + 10) % 2 != 1)
             {
-                rectangle.setFillColor(sf::Color(235, 236, 208));
+                rectangle.setFillColor(ColorWhite);
             }
             else {
-                rectangle.setFillColor(sf::Color(119, 149, 86));
+                rectangle.setFillColor(ColorBlack);
             }
 
             render->draw(rectangle);
@@ -198,8 +120,68 @@ void Draw::DrawBoard(Piece** board, RenderWindow* render, int indexChoice, list<
     }
 
 }
-#endif // _WINDOW
 
+#endif // !_CONSOLE
+
+
+void Draw::DrawBoardPossibleMove(Piece** board, list<int> possibleMove)
+{
+    system("cls");
+    cout << "\n" << "     A   B   C   D   E   F   G   H";
+
+    for (int y = 0; y < 8; y++)
+    {
+        cout << "\n" << "\033[90m" << "   +---+---+---+---+---+---+---+---+" << "\n" << "\033[37m" << " " << y + 1 << " "; // Print a newline to separate rows
+        for (int x = 0; x < 8; x++)
+        {
+            int index = y * 8 + x;
+            cout << "\033[40m\033[90m|";
+
+            if ((x - y + 10) % 2 != 1)
+            {
+                cout << "\033[41m";
+            }
+
+            // Access the piece at (x, y)
+            Piece* piece = board[index];
+
+            if (find(possibleMove.begin(), possibleMove.end(), index) != possibleMove.end())
+            {
+                if (board[index] == nullptr)
+                {
+                    cout << "\033[43m";
+                }
+                else
+                {
+                    cout << "\033[42m";
+                }
+            }
+
+            if (piece == nullptr)
+            {
+                cout << "   ";
+            }
+            else if (piece->color == White)
+            {
+                cout << "\033[37m";
+            }
+            else if (piece->color == Black)
+            {
+                cout << "\033[34m";
+            }
+
+            // Print the icon if the piece exists, or print a space if it's null
+            if (piece != nullptr) {
+                char icon = piece->icon;
+                cout << " " << icon << " ";
+            }
+        }
+        cout << "\033[40m\033[90m|";
+    }
+    cout << "\033[90m" << "\n   +---+---+---+---+---+---+---+---+";
+    cout << "\n"; // Final newline at the end
+    Reset();
+}
 
 
 void Draw::Reset()

@@ -10,7 +10,7 @@ void Bishop::Init(ColorCustom c, int x, int y)
     posX = x;
     posY = y;
 
-#ifdef _WINDOW
+#ifndef _CONSOLE
     string path = "";
 
     if (color == White)
@@ -28,38 +28,6 @@ void Bishop::Init(ColorCustom c, int x, int y)
 #endif
 }
 
-bool Bishop::Move(Piece* board[64], int pos1) {
-    int y = pos1 / 8;
-    int x = pos1 % 8;
-    int index = posY * 8 + posX;
-    int diffX = x - posX;
-    int diffY = y - posY;
-    int diffXAbs = abs(diffX);
-    int diffYAbs = abs(diffY);
-
-    if (diffXAbs == diffYAbs)
-    {
-        for (int i = 1; i < diffXAbs; i++)
-        {
-            int indexCaseX = posX + (i * (diffX / diffXAbs));
-            int indexCaseY = posY + (i * (diffY / diffYAbs));
-
-            if (board[indexCaseY * 8 + indexCaseX] != nullptr)
-            {
-                return false;
-            }
-        }
-        board[pos1] = board[index];
-        board[index] = nullptr;
-
-        posY = y;
-        posX = x;
-
-        return true;
-    }
-
-    return false;
-}
 
 std::list<int> Bishop::GetPossibleMoves(Piece* board[64], int pos1)
 {

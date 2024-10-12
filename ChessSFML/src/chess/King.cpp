@@ -10,7 +10,7 @@ void King::Init(ColorCustom c, int x, int y)
 	posX = x;
 	posY = y;
 
-#ifdef _WINDOW
+#ifndef _CONSOLE
 
 	string path = "";
 
@@ -25,34 +25,10 @@ void King::Init(ColorCustom c, int x, int y)
 	if (!texture.loadFromFile(path))
 	{
 		cout << "n";
+		// erreur...
 	}
 
-#endif // _WINDOW
-
-}
-
-bool King::Move(Piece* board[64], int pos1) {
-	int y = pos1 / 8;
-	int x = pos1 % 8;
-	int index = posY * 8 + posX;
-	int diffX = x - posX;
-	int diffY = y - posY;
-	int diffXAbs = abs(diffX);
-	int diffYAbs = abs(diffY);
-
-	if ((diffYAbs == 0 && diffXAbs == 1) || (diffXAbs == 0 && diffYAbs == 1) || (diffXAbs == 1 && diffYAbs == 1))
-	{
-
-		board[pos1] = board[index];
-		board[index] = nullptr;
-
-		posY = y;
-		posX = x;
-
-		return true;
-
-	}
-	return false;
+#endif // !_CONSOLE 
 }
 
 std::list<int> King::GetPossibleMoves(Piece* board[64], int pos1)

@@ -1,26 +1,40 @@
 #include "pch.h"
 #include "Game.h"
+//
+//#ifdef _DEMO
+//#define TOTALMOVE 3
+//#endif // _LIGHT
+//
+//#ifndef _DEMO
+//#define TOTALMOVE -1
+//#endif // !_DEMO
 
-#ifdef _DEMO
-#define TOTALMOVE 3
-#endif // _LIGHT
+#ifndef _CONSOLE 
 
-#ifndef _DEMO
-#define TOTALMOVE -1
-#endif // !_DEMO
-
-#ifdef _WINDOW
 void Game::Init(RenderWindow* r)
 {
 	render = r;
-	move = TOTALMOVE;
+	//move = TOTALMOVE;
 	board = Board();
 	board.Init();
 }
 
-#endif // 
+#endif // CONSOLE
+
+#ifdef _CONSOLE 
+
+void Game::Init()
+{
+	//move = TOTALMOVE;
+	board = Board();
+	board.Init();
+}
+
+#endif // DEBUG
 
 
+
+#ifndef _CONSOLE 
 
 void Game::GameLoop()
 {
@@ -80,14 +94,12 @@ void Game::GameLoop()
 					Pawn* p = (Pawn*)board.board[index1];
 					p->SpecialMove(board.board, index2);
 				}
-				//board.board[index1]->Move(board.board, index2);
 				board.board[index2] = board.board[index1];
 				board.board[index1] = nullptr;
 				board.board[index2]->posX = index2 % 8;
 				board.board[index2]->posY = index2 / 8;
 			}
 
-			//isPass = board.board[index1]->Move(board.board, index2);
 
 			if (found)
 			{
@@ -110,22 +122,27 @@ void Game::GameLoop()
 		index1 = -1;
 		index2 = -1;
 	}
-#ifdef _WINDOW
 
 	draw.DrawBoard(board.board, render, index1, possibleMove);
-#endif
 	return;
+}
+
+#endif // CONSOLE
+
+#ifdef _CONSOLE 
 
 
+void Game::GameLoop()
+{
+	Draw draw = Draw();
+
+	draw.DrawBoard(board.board, -1, {});
 
 	while (isGame)
 	{
-		Draw draw = Draw();
 
-		//draw.DrawBoard(board.board);
-
-		char pieceToMove[2];
-		char caseToMove[2];
+		char pieceToMove[3];
+		char caseToMove[3];
 
 		if (player == White)
 		{
@@ -169,6 +186,7 @@ void Game::GameLoop()
 
 		if (pos2 > 64 || pos2 < 0)
 		{
+			possibleMove.clear();
 			continue;
 		}
 
@@ -177,6 +195,7 @@ void Game::GameLoop()
 		{
 			if (board.board[pos1]->color == board.board[pos2]->color)
 			{
+				possibleMove.clear();
 				continue;
 			}
 		}
@@ -184,11 +203,11 @@ void Game::GameLoop()
 		//if you play on the same place
 		if (pos1 == pos2)
 		{
+			possibleMove.clear();
 			continue;
 		}
 
 		bool isKing = false;
-		bool isPossible = true;
 
 		if (board.board[pos2] != nullptr)
 		{
@@ -200,12 +219,24 @@ void Game::GameLoop()
 
 		if (board.board[pos1]->color == player)
 		{
-			isPossible = board.board[pos1]->Move(board.board, pos2);
-		}
-		else { continue; }
 
-		if (!isPossible)
-		{
+			bool found = (find(possibleMove.begin(), possibleMove.end(), pos2) != possibleMove.end());
+
+			if (found)
+			{
+				if (board.board[pos1]->icon == 'P')
+				{
+					Pawn* p = (Pawn*)board.board[pos1];
+					p->SpecialMove(board.board, pos2);
+				}
+				board.board[pos2] = board.board[pos1];
+				board.board[pos1] = nullptr;
+				board.board[pos2]->posX = pos2 % 8;
+				board.board[pos2]->posY = pos2 / 8;
+			}
+		}
+		else {
+			possibleMove.clear();
 			continue;
 		}
 
@@ -223,24 +254,21 @@ void Game::GameLoop()
 
 		if (player == White)
 		{
-			move--;
-		}
-
-		if (move == 0)
-		{
-			isGame = false;
-			cout << "\nFin de la demo \n";
-		}
-
-		if (player == White)
-		{
 			player = Black;
 		}
 		else {
 			player = White;
 		}
+
+		draw.DrawBoard(board.board, pos1, possibleMove);
+
+		possibleMove.clear();
 	}
+
 }
+
+
+#endif // DEBUG
 
 int Game::ConvertToPosition(char text[2]) {
 
@@ -256,7 +284,7 @@ int Game::ConvertToPosition(char text[2]) {
 	return rowIndex * 8 + colIndex;
 }
 
-void Game::MakeMove(int x, int y) {
+void Game::ConvertPosition(int x, int y) {
 	// Define the top-left corner of the board (50, 50) and the size of each case (100x100 pixels)
 	const int boardStartX = 50;
 	const int boardStartY = 50;

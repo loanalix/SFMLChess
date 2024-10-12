@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "main.h"
 
-#ifdef _WINDOW
+#ifndef _CONSOLE 
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 Game game;
@@ -97,7 +98,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int yPos = HIWORD(lParam);  // High-order word is the y position
 
 		// Call game.GameLoop() with mouse position
-		game.MakeMove(xPos, yPos);
+		game.ConvertPosition(xPos, yPos);
 		break;
 	}
 	case WM_RBUTTONDOWN:  // Right mouse button pressed (if needed)
@@ -106,7 +107,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int yPos = HIWORD(lParam);  // High-order word is the y position
 
 		// Call game.GameLoop() or another method with mouse position
-		game.MakeMove(xPos, yPos);
+		game.ConvertPosition(xPos, yPos);
 		break;
 	}
 	case WM_DESTROY:
@@ -122,8 +123,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	return 0;
 }
-#endif // 
 
+#endif // !CONSOLE
 
+#ifdef _CONSOLE 
 
+int main()
+{
+	Game game = Game();
+	game.Init();
+	game.GameLoop();
+}
 
+#endif // CONSOLE
